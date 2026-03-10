@@ -312,18 +312,31 @@ export default function AdminPage() {
     }
   };
 
-  const generatePayslipPDF = (payslip: Payslip) => {
+  const generatePayslipPDF = async (payslip: Payslip) => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Header
-    doc.setFontSize(22);
-    doc.setTextColor(30, 58, 95); // #ea580c
-    doc.text('Ravaan Space', pageWidth / 2, 20, { align: 'center' });
+    // Fetch and Draw logo
+    try {
+      const imgRes = await fetch('/logo.png');
+      const imgBlob = await imgRes.blob();
+      const reader = new FileReader();
 
+      await new Promise((resolve) => {
+        reader.onloadend = () => {
+          doc.addImage(reader.result as string, 'PNG', pageWidth / 2 - 30, 6, 60, 15);
+          resolve(null);
+        };
+        reader.readAsDataURL(imgBlob);
+      });
+    } catch (e) {
+      console.error("Could not add logo to PDF:", e);
+    }
+
+    // Header
     doc.setFontSize(14);
     doc.setTextColor(100, 100, 100);
-    doc.text('Payslip', pageWidth / 2, 28, { align: 'center' });
+    doc.text('Official Payslip', pageWidth / 2, 28, { align: 'center' });
 
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
@@ -342,7 +355,7 @@ export default function AdminPage() {
         ['Deductions', `- ${payslip.deductions.toLocaleString()}`],
       ],
       theme: 'grid',
-      headStyles: { fillColor: [30, 58, 95] },
+      headStyles: { fillColor: [234, 88, 12] },
       styles: { fontSize: 11, cellPadding: 5 },
     });
 

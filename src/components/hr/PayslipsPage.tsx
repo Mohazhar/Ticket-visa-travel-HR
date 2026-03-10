@@ -69,17 +69,35 @@ export default function PayslipsPage() {
     setDialogOpen(true);
   };
 
-  const handleDownloadPDF = (payslip: Payslip) => {
+  const handleDownloadPDF = async (payslip: Payslip) => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Header
-    doc.setFillColor(30, 58, 95); // #ea580c
+    // Header Background
+    doc.setFillColor(234, 88, 12); // #ea580c
     doc.rect(0, 0, 210, 40, 'F');
+
+    // Fetch and Draw logo
+    try {
+      const imgRes = await fetch('/logo.png');
+      const imgBlob = await imgRes.blob();
+      const reader = new FileReader();
+
+      await new Promise((resolve) => {
+        reader.onloadend = () => {
+          doc.addImage(reader.result as string, 'PNG', 14, 12, 60, 15);
+          resolve(null);
+        };
+        reader.readAsDataURL(imgBlob);
+      });
+    } catch (e) {
+      console.error("Could not add logo to PDF:", e);
+    }
 
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(24);
     doc.setFont("helvetica", "bold");
-    doc.text('PAYSLIP', 105, 25, { align: 'center' });
+    doc.text('PAYSLIP', 180, 25, { align: 'center' });
 
     doc.setTextColor(0, 0, 0);
 
@@ -155,7 +173,7 @@ export default function PayslipsPage() {
 
     // Net Salary Section
     currentY += 25;
-    doc.setFillColor(30, 58, 95); // #ea580c
+    doc.setFillColor(234, 88, 12); // #ea580c
     doc.rect(20, currentY, 170, 12, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(14);
@@ -305,6 +323,9 @@ export default function PayslipsPage() {
           </DialogHeader>
           {selectedPayslip && (
             <div className="space-y-4">
+              <div className="flex justify-center mb-2">
+                <img src="/logo.png" alt="Ravaan Space Logo" className="h-10 w-auto object-contain" />
+              </div>
               <div className="text-center p-4 bg-[#ea580c] text-white rounded-lg">
                 <p className="text-sm opacity-80">{monthNames[selectedPayslip.month - 1]} {selectedPayslip.year}</p>
                 <p className="text-3xl font-bold mt-1">₹{selectedPayslip.netSalary.toLocaleString()}</p>
