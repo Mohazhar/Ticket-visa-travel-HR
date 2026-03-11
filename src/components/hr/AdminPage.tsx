@@ -312,6 +312,23 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteLeave = async (leaveId: string) => {
+    if (!confirm('Are you sure you want to permanently delete this leave request?')) return;
+    try {
+      const res = await fetch(`/api/leaves/${leaveId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        fetchData();
+      } else {
+        alert(data.error || 'Failed to delete leave request');
+      }
+    } catch (err) {
+      console.error('Error deleting leave:', err);
+    }
+  };
+
   const generatePayslipPDF = async (payslip: Payslip) => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -763,6 +780,26 @@ export default function AdminPage() {
                                   onClick={() => handleLeaveAction(leave.id, 'rejected')}
                                 >
                                   <X className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-red-200 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                  onClick={() => handleDeleteLeave(leave.id)}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            )}
+                            {leave.status !== 'pending' && (
+                              <div className="flex justify-end">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-red-200 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                  onClick={() => handleDeleteLeave(leave.id)}
+                                >
+                                  <Trash2 className="w-4 h-4" />
                                 </Button>
                               </div>
                             )}
