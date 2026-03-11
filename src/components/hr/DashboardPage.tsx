@@ -72,7 +72,11 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: 'dash
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) {
       setProfilePhoto(imageSrc);
-      localStorage.setItem(`profile_photo_${user?.id}`, imageSrc);
+      try {
+        localStorage.setItem(`profile_photo_${user?.id}`, imageSrc);
+      } catch (e) {
+        console.warn('Storage quota exceeded, photo will not persist:', e);
+      }
       setIsCameraOpen(false);
     }
   }, [webcamRef, user?.id]);
@@ -84,7 +88,12 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: 'dash
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setProfilePhoto(base64String);
-        localStorage.setItem(`profile_photo_${user?.id}`, base64String);
+        try {
+          localStorage.setItem(`profile_photo_${user?.id}`, base64String);
+        } catch (e) {
+          console.warn('Storage quota exceeded, uploading photo will not persist:', e);
+          alert('Image is too large and exceeds local browser storage. It will not persist upon reload. Please use a smaller image under 3mb.');
+        }
       };
       reader.readAsDataURL(file);
     }

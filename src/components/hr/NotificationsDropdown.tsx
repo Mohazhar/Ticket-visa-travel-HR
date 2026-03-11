@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bell, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,14 +30,32 @@ export function NotificationsDropdown({
 }) {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
+    const initialLoadDone = useRef(false);
 
     const fetchNotifications = async () => {
         try {
             const response = await fetch('/api/notifications');
             if (response.ok) {
                 const data = await response.json();
+
+                setUnreadCount((prevCount) => {
+                    const newCount = data.unreadCount || 0;
+
+                    // Play a sound if we receive a new notification after the initial load
+                    if (initialLoadDone.current && newCount > prevCount) {
+                        try {
+                            const audio = new Audio('/notify.wav');
+                            audio.play().catch(e => console.log('Audio autoplay prevented by browser'));
+                        } catch (error) {
+                            console.error('Audio play error', error);
+                        }
+                    }
+
+                    return newCount;
+                });
+
                 setNotifications(data.notifications || []);
-                setUnreadCount(data.unreadCount || 0);
+                initialLoadDone.current = true;
             }
         } catch (error) {
             console.error('Failed to fetch notifications', error);
@@ -46,8 +64,8 @@ export function NotificationsDropdown({
 
     useEffect(() => {
         fetchNotifications();
-        // Setup simple polling every 30 seconds for new notifications
-        const interval = setInterval(fetchNotifications, 30000);
+        // Setup fast polling every 5 seconds for immediate notifications
+        const interval = setInterval(fetchNotifications, 5000);
         return () => clearInterval(interval);
     }, []);
 
