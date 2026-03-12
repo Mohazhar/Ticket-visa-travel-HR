@@ -196,7 +196,15 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: 'dash
 
   const getBreakStatus = (breakType: string) => {
     if (!todayAttendance || !todayAttendance.breaks) return 'none';
-    const breaks = JSON.parse(todayAttendance.breaks);
+    let breaks = [];
+    try {
+      breaks = typeof todayAttendance.breaks === 'string'
+        ? JSON.parse(todayAttendance.breaks)
+        : todayAttendance.breaks;
+      if (!Array.isArray(breaks)) breaks = [];
+    } catch (e) {
+      breaks = [];
+    }
     const specificBreak = breaks.find((b: any) => b.type === breakType && !b.end);
     if (specificBreak) return 'active';
     const finishedBreak = breaks.find((b: any) => b.type === breakType && b.end);

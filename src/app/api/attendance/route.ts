@@ -111,7 +111,13 @@ export async function PUT(request: NextRequest) {
         }
 
         if (breakType) {
-            let breaks = JSON.parse(existingRecord.breaks || '[]');
+            let breaks: any[] = [];
+            try {
+                breaks = JSON.parse((existingRecord as any).breaks || '[]');
+                if (!Array.isArray(breaks)) breaks = [];
+            } catch (e) {
+                breaks = [];
+            }
             const now = new Date();
 
             // Find an active (unended) break of the same type
@@ -128,7 +134,7 @@ export async function PUT(request: NextRequest) {
                 });
             }
 
-            const attendance = await db.attendance.update({
+            const attendance = await (db.attendance as any).update({
                 where: { id: existingRecord.id },
                 data: { breaks: JSON.stringify(breaks) }
             });
@@ -151,7 +157,10 @@ export async function PUT(request: NextRequest) {
 
         return NextResponse.json({ success: true, attendance });
     } catch (error) {
-        console.error('Attendance PUT error:', error);
-        return NextResponse.json({ success: false, error: 'Action failed' }, { status: 500 });
+        console.error('Attendance PUT error detail:', error);
+        return NextResponse.json({
+            success: false,
+            error: error instanceof Error ? error.message : 'Action failed'
+        }, { status: 500 });
     }
 }
