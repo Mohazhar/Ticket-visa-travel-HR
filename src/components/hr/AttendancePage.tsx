@@ -11,6 +11,7 @@ interface Attendance {
     checkIn: string;
     checkOut: string | null;
     status: string;
+    breaks?: string | null;
 }
 
 export default function AttendancePage() {
@@ -64,33 +65,60 @@ export default function AttendancePage() {
                                         <TableHead>Date</TableHead>
                                         <TableHead>Check In</TableHead>
                                         <TableHead>Check Out</TableHead>
+                                        <TableHead>Breaks</TableHead>
                                         <TableHead>Status</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {attendances.map((record) => (
-                                        <TableRow key={record.id}>
-                                            <TableCell className="font-medium text-[#ea580c]">
-                                                <div className="flex items-center">
-                                                    <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                                                    {new Date(record.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                {new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </TableCell>
-                                            <TableCell>
-                                                {record.checkOut
-                                                    ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                                                    : <span className="text-gray-400 italic">Not checked out</span>}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={record.checkOut ? "secondary" : "default"} className={!record.checkOut ? "bg-green-500" : ""}>
-                                                    {record.checkOut ? 'Completed' : 'Working'}
-                                                </Badge>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    {attendances.map((record) => {
+                                        let breaks: any[] = [];
+                                        try {
+                                            breaks = JSON.parse(record.breaks || '[]');
+                                        } catch (e) {
+                                            breaks = [];
+                                        }
+
+                                        return (
+                                            <TableRow key={record.id}>
+                                                <TableCell className="font-medium text-[#ea580c]">
+                                                    <div className="flex items-center">
+                                                        <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                                                        {new Date(record.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {record.checkOut
+                                                        ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                                        : <span className="text-gray-400 italic">Not checked out</span>}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {breaks.length === 0 ? (
+                                                            <span className="text-xs text-gray-400 italic">N/A</span>
+                                                        ) : (
+                                                            breaks.map((b: any, idx: number) => (
+                                                                <Badge
+                                                                    key={idx}
+                                                                    variant="outline"
+                                                                    className={`${!b.end ? 'bg-blue-50 text-blue-700 border-blue-200 animate-pulse' : 'bg-gray-50 text-gray-500'} text-[10px] px-1 py-0`}
+                                                                >
+                                                                    {b.type.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                                                </Badge>
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge variant={record.checkOut ? "secondary" : "default"} className={!record.checkOut ? "bg-green-500" : ""}>
+                                                        {record.checkOut ? 'Completed' : 'Working'}
+                                                    </Badge>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                                 </TableBody>
                             </Table>
                         </div>

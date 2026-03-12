@@ -41,7 +41,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Users, UserPlus, Check, X, Loader2, FileText, DollarSign, Trash2, Edit, Download, Clock, LogIn, LogOut, CheckCircle } from 'lucide-react';
+import { Users, UserPlus, Check, X, Loader2, FileText, DollarSign, Trash2, Edit, Download, Clock, LogIn, LogOut, CheckCircle, CalendarDays, Coffee } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -183,6 +183,8 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchData();
+    const interval = setInterval(fetchData, 10000); // Poll every 10 seconds
+    return () => clearInterval(interval);
   }, []);
 
   const resetEmployeeForm = () => {
@@ -577,7 +579,7 @@ export default function AdminPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-0 shadow-md">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -585,7 +587,7 @@ export default function AdminPage() {
                 <p className="text-sm text-gray-500">Total Employees</p>
                 <p className="text-2xl font-bold text-[#ea580c]">{employees.length}</p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+              <div className="hidden sm:flex w-12 h-12 rounded-full bg-orange-50 items-center justify-center">
                 <Users className="w-6 h-6 text-[#ea580c]" />
               </div>
             </div>
@@ -599,7 +601,7 @@ export default function AdminPage() {
                 <p className="text-sm text-gray-500">Pending Leaves</p>
                 <p className="text-2xl font-bold text-yellow-600">{pendingLeaves.length}</p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center">
+              <div className="hidden sm:flex w-12 h-12 rounded-full bg-yellow-50 items-center justify-center">
                 <FileText className="w-6 h-6 text-yellow-600" />
               </div>
             </div>
@@ -610,11 +612,37 @@ export default function AdminPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Payslips</p>
-                <p className="text-2xl font-bold text-green-600">{payslips.length}</p>
+                <p className="text-sm text-gray-500">Online Now</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {attendances.filter(a => !a.checkOut).length}
+                </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-600" />
+              <div className="hidden sm:flex w-12 h-12 rounded-full bg-green-50 items-center justify-center">
+                <Clock className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">On Break</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {attendances.filter(a => {
+                    if (!a.breaks) return false;
+                    try {
+                      const breaks = JSON.parse(a.breaks);
+                      return Array.isArray(breaks) && breaks.some((b: any) => !b.end);
+                    } catch (e) {
+                      return false;
+                    }
+                  }).length}
+                </p>
+              </div>
+              <div className="hidden sm:flex w-12 h-12 rounded-full bg-blue-50 items-center justify-center">
+                <Coffee className="w-6 h-6 text-blue-600" />
               </div>
             </div>
           </CardContent>
@@ -924,6 +952,9 @@ export default function AdminPage() {
               {loading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+                </div>
+              ) : attendances.length > 0 ? (
+                <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -936,48 +967,66 @@ export default function AdminPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {attendances.map((record) => (
-                        <TableRow key={record.id}>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{record.employee?.name}</p>
-                              <p className="text-xs text-gray-500">{record.employee?.employeeId}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
-                          <TableCell>{new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TableCell>
-                          <TableCell>{record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '---'}</TableCell>
-                          <TableCell>
-                            <div className="flex flex-wrap gap-1">
-                              {(() => {
-                                const breaks = JSON.parse(record.breaks || '[]');
-                                if (breaks.length === 0) return <span className="text-xs text-gray-400 italic">No breaks</span>;
-                                return breaks.map((b: any, idx: number) => {
-                                  const isActive = !b.end;
-                                  return (
-                                    <Badge
-                                      key={idx}
-                                      variant="outline"
-                                      className={`${isActive ? 'bg-blue-50 text-blue-700 border-blue-200 animate-pulse' : 'bg-gray-50 text-gray-500'} text-[10px] px-1 py-0`}
-                                    >
-                                      {b.type.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                                      {isActive ? ' (Active)' : ''}
-                                    </Badge>
-                                  );
-                                });
-                              })()}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={record.checkOut ? "secondary" : "default"} className={!record.checkOut ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-200" : ""}>
-                              <div className="flex items-center gap-1.5">
-                                {!record.checkOut && <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>}
-                                {record.checkOut ? 'Checked Out' : 'Online / Working'}
+                      {attendances.map((record) => {
+                        const breaks = JSON.parse(record.breaks || '[]');
+                        const activeBreak = breaks.find((b: any) => !b.end);
+                        const isOnline = !record.checkOut;
+
+                        return (
+                          <TableRow key={record.id}>
+                            <TableCell>
+                              <div>
+                                <p className="font-medium">{record.employee?.name}</p>
+                                <p className="text-xs text-gray-500">{record.employee?.employeeId}</p>
                               </div>
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                            </TableCell>
+                            <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TableCell>
+                            <TableCell>{record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '---'}</TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {breaks.length === 0 ? (
+                                  <span className="text-xs text-gray-400 italic">No breaks</span>
+                                ) : (
+                                  breaks.map((b: any, idx: number) => {
+                                    const isActive = !b.end;
+                                    return (
+                                      <Badge
+                                        key={idx}
+                                        variant="outline"
+                                        className={`${isActive ? 'bg-blue-50 text-blue-700 border-blue-200 animate-pulse' : 'bg-gray-50 text-gray-500'} text-[10px] px-1 py-0`}
+                                      >
+                                        {b.type.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                      </Badge>
+                                    );
+                                  })
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {activeBreak ? (
+                                <Badge className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200">
+                                  <div className="flex items-center gap-1.5">
+                                    <Coffee className="w-3 h-3 animate-bounce" />
+                                    On Break
+                                  </div>
+                                </Badge>
+                              ) : isOnline ? (
+                                <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-200">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                    Online / Working
+                                  </div>
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary">
+                                  Checked Out
+                                </Badge>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </div>
