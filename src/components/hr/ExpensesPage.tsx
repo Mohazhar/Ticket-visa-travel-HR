@@ -311,7 +311,31 @@ export default function ExpensesPage() {
       `"${expense.employee?.name || 'N/A'} (${expense.employee?.employeeId || 'N/A'})"`
     ]);
 
-    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    // Calculate Summaries for CSV
+    const totalAmount = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const catTotals: Record<string, number> = {};
+    expenses.forEach(exp => {
+      catTotals[exp.category] = (catTotals[exp.category] || 0) + exp.amount;
+    });
+
+    const summaryRows = [
+      [], // Empty row
+      ['SUMMARY'],
+      ['Total Expenses', totalAmount.toFixed(2)],
+      [],
+      ['Category-wise Breakdown'],
+      ['Category', 'Total Amount']
+    ];
+
+    Object.entries(catTotals).forEach(([cat, amt]) => {
+      summaryRows.push([cat, amt.toFixed(2)]);
+    });
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(',')),
+      ...summaryRows.map(row => row.join(','))
+    ].join('\n');
 
     // Safely encode and trigger browser download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -319,7 +343,7 @@ export default function ExpensesPage() {
     const link = document.createElement('a');
 
     link.href = url;
-    link.setAttribute('download', 'ravaan_space_expenses.csv');
+    link.setAttribute('download', `ravaan_space_expenses_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
