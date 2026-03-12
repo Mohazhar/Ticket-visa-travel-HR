@@ -93,11 +93,19 @@ export async function PUT(request: NextRequest) {
         const user = await getAuthUser();
         if (!user) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
 
-        const body = await request.json().catch(() => ({}));
+        let body: any = {};
+        try {
+            const text = await request.text();
+            body = text ? JSON.parse(text) : {};
+        } catch (e) {
+            body = {};
+        }
+
         const { breakType } = body;
         const todayDate = new Date().toISOString().split('T')[0];
 
-        const existingRecord = await db.attendance.findUnique({
+        // Using 'any' to bypass Prisma type checks during schema transitions
+        const existingRecord = await (db.attendance as any).findUnique({
             where: {
                 employeeId_date: {
                     employeeId: user.id,
@@ -113,25 +121,21 @@ export async function PUT(request: NextRequest) {
         if (breakType) {
             let breaks: any[] = [];
             try {
-                breaks = JSON.parse((existingRecord as any).breaks || '[]');
+                // Safeguard against missing or malformed break data
+                const rawBreaks = existingRecord.breaks || '[]';
+                breaks = typeof rawBreaks === 'string' ? JSON.parse(rawBreaks) : (rawBreaks || []);
                 if (!Array.isArray(breaks)) breaks = [];
             } catch (e) {
                 breaks = [];
             }
-            const now = new Date();
 
-            // Find an active (unended) break of the same type
+            const now = new Date();
             const activeBreakIndex = breaks.findIndex((b: any) => b.type === breakType && !b.end);
 
             if (activeBreakIndex !== -1) {
-                // End the break
                 breaks[activeBreakIndex].end = now;
             } else {
-                // Start a new break
-                breaks.push({
-                    type: breakType,
-                    start: now
-                });
+                breaks.push({ type: breakType, start: now });
             }
 
             const attendance = await (db.attendance as any).update({
@@ -143,7 +147,7 @@ export async function PUT(request: NextRequest) {
         }
 
         // Default: Handle check-out
-        const attendance = await db.attendance.update({
+        const attendance = await (db.attendance as any).update({
             where: {
                 employeeId_date: {
                     employeeId: user.id,
