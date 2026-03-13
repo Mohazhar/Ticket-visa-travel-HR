@@ -31,7 +31,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#ea580c] via-[#c2410c] to-[#ea580c] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#004d98] via-[#003466] to-[#004d98] flex items-center justify-center p-4">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/5 rounded-full blur-3xl" />
@@ -42,11 +42,11 @@ export default function LoginPage() {
           <div className="mx-auto flex items-center justify-center mb-6 px-4">
             <img
               src="/logo.png"
-              alt="Ravaan Space Logo"
+              alt="Ticket Visa Travel Logo"
               className="w-[240px] h-auto object-contain"
             />
           </div>
-          <CardTitle className="text-2xl font-bold text-[#ea580c]">Sign In</CardTitle>
+          <CardTitle className="text-2xl font-bold text-[#004d98]">Sign In</CardTitle>
           <CardDescription className="text-gray-500">
             Sign in to access your HR dashboard
           </CardDescription>
@@ -70,7 +70,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-11 border-gray-200 focus:border-[#ea580c] focus:ring-[#ea580c]"
+                className="h-11 border-gray-200 focus:border-[#004d98] focus:ring-[#004d98]"
               />
             </div>
             <div className="space-y-2">
@@ -84,13 +84,13 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="h-11 border-gray-200 focus:border-[#ea580c] focus:ring-[#ea580c]"
+                className="h-11 border-gray-200 focus:border-[#004d98] focus:ring-[#004d98]"
               />
             </div>
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-[#ea580c] hover:bg-[#c2410c] text-white font-medium shadow-md"
+              className="w-full h-11 bg-[#004d98] hover:bg-[#003466] text-white font-medium shadow-md"
             >
               {loading ? (
                 <>

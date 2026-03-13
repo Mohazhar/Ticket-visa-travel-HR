@@ -74,7 +74,7 @@ export default function PayslipsPage() {
     const pageWidth = doc.internal.pageSize.getWidth();
 
     // Header Background
-    doc.setFillColor(234, 88, 12); // #ea580c
+    doc.setFillColor(0, 77, 152); // #004d98 (Logo Blue)
     doc.rect(0, 0, 210, 40, 'F');
 
     // Fetch and Draw logo
@@ -105,7 +105,7 @@ export default function PayslipsPage() {
     let currentY = 55;
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text('Company: Ravaan Space', 20, currentY);
+    doc.text('Company: Ticket Visa Travel', 20, currentY);
 
     currentY += 10;
     doc.setFontSize(11);
@@ -173,7 +173,7 @@ export default function PayslipsPage() {
 
     // Net Salary Section
     currentY += 25;
-    doc.setFillColor(234, 88, 12); // #ea580c
+    doc.setFillColor(0, 77, 152); // #004d98
     doc.rect(20, currentY, 170, 12, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(14);
@@ -197,7 +197,7 @@ export default function PayslipsPage() {
     <div className="p-4 lg:p-6 space-y-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#ea580c]">Payslips</h1>
+        <h1 className="text-2xl font-bold text-[#004d98]">Payslips</h1>
         <p className="text-gray-500">View and download your salary slips</p>
       </div>
 
@@ -236,10 +236,10 @@ export default function PayslipsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Net Salary (Total)</p>
-                <p className="text-2xl font-bold text-[#ea580c]">₹{totalNetSalary.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-[#004d98]">₹{totalNetSalary.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-[#ea580c]" />
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-[#004d98]" />
               </div>
             </div>
           </CardContent>
@@ -249,13 +249,13 @@ export default function PayslipsPage() {
       {/* Payslips Table */}
       <Card className="border-0 shadow-md">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[#ea580c]">Salary History</CardTitle>
+          <CardTitle className="text-lg font-semibold text-[#004d98]">Salary History</CardTitle>
           <CardDescription>Your monthly payslip records</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+              <Loader2 className="w-6 h-6 animate-spin text-[#004d98]" />
             </div>
           ) : payslips.length > 0 ? (
             <div className="overflow-x-auto">
@@ -294,7 +294,7 @@ export default function PayslipsPage() {
                             size="sm"
                             variant="outline"
                             onClick={() => handleDownloadPDF(payslip)}
-                            className="border-[#ea580c] text-[#ea580c] hover:bg-[#ea580c] hover:text-white"
+                            className="border-[#004d98] text-[#004d98] hover:bg-[#004d98] hover:text-white"
                           >
                             <Download className="w-4 h-4 mr-1" />
                             Download
@@ -319,14 +319,14 @@ export default function PayslipsPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#ea580c]">Payslip Details</DialogTitle>
+            <DialogTitle className="text-[#004d98]">Payslip Details</DialogTitle>
           </DialogHeader>
           {selectedPayslip && (
             <div className="space-y-4">
               <div className="flex justify-center mb-2">
-                <img src="/logo.png" alt="Ravaan Space Logo" className="h-10 w-auto object-contain" />
+                <img src="/logo.png" alt="Ticket Visa Travel Logo" className="h-10 w-auto object-contain" />
               </div>
-              <div className="text-center p-4 bg-[#ea580c] text-white rounded-lg">
+              <div className="text-center p-4 bg-[#004d98] text-white rounded-lg">
                 <p className="text-sm opacity-80">{monthNames[selectedPayslip.month - 1]} {selectedPayslip.year}</p>
                 <p className="text-3xl font-bold mt-1">₹{selectedPayslip.netSalary.toLocaleString()}</p>
                 <p className="text-sm opacity-80">Net Salary</p>
@@ -349,7 +349,7 @@ export default function PayslipsPage() {
 
               <Button
                 onClick={() => handleDownloadPDF(selectedPayslip)}
-                className="w-full bg-[#ea580c] hover:bg-[#c2410c] text-white"
+                className="w-full bg-[#004d98] hover:bg-[#003466] text-white"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download Payslip

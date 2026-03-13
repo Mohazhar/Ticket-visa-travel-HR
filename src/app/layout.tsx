@@ -15,21 +15,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ravaan Space Portal - Human Resource Management System",
-  description: "Modern HR Management System for Ravaan Space, built with Next.js, TypeScript, and Tailwind CSS.",
-  keywords: ["Ravaan Space", "HR", "Human Resources", "Next.js", "TypeScript", "Tailwind CSS", "Employee Management"],
-  authors: [{ name: "Ravaan Space IT Team" }],
+  title: "Ticket Visa Travel Portal - Human Resource Management System",
+  description: "Modern HR Management System for Ticket Visa Travel, built with Next.js, TypeScript, and Tailwind CSS.",
+  keywords: ["Ticket Visa Travel", "HR", "Human Resources", "Next.js", "TypeScript", "Tailwind CSS", "Employee Management"],
+  authors: [{ name: "Ticket Visa Travel IT Team" }],
   openGraph: {
-    title: "Ravaan Space Portal - Manage Your Workspace",
-    description: "Enjoy your workspace. Access Ravaan Space's employee dashboard to view payslips, claim expenses, and submit leave requests natively.",
-    url: "https://ravaanspace.com",
-    siteName: "Ravaan Space HRMS",
+    title: "Ticket Visa Travel Portal - Manage Your Workspace",
+    description: "Enjoy your workspace. Access Ticket Visa Travel's employee dashboard to view payslips, claim expenses, and submit leave requests natively.",
+    url: "https://ticketvisatravel.com",
+    siteName: "Ticket Visa Travel HRMS",
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "Ravaan Space Logo",
+        alt: "Ticket Visa Travel Logo",
       },
     ],
     locale: "en_US",
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ravaan Space Portal - Human Resource Management System",
-    description: "Modern HR Management System for Ravaan Space. Enjoy your workspace.",
+    title: "Ticket Visa Travel Portal - Human Resource Management System",
+    description: "Modern HR Management System for Ticket Visa Travel. Enjoy your workspace.",
     images: ["/logo.png"],
   },
 };

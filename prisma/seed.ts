@@ -23,7 +23,7 @@ async function main() {
     data: {
       employeeId: 'EMP001',
       name: 'John Admin',
-      email: 'admin@ravaan.com',
+      email: 'admin@ticketvisatravel.com',
       password: adminPassword,
       designation: 'HR Manager',
       department: 'Human Resources',
@@ -37,7 +37,7 @@ async function main() {
     data: {
       employeeId: 'EMP002',
       name: 'Sarah Johnson',
-      email: 'sarah.johnson@company.com',
+      email: 'sarah.johnson@ticketvisatravel.com',
       password: passSarah,
       designation: 'Software Engineer',
       department: 'Engineering',
@@ -50,7 +50,7 @@ async function main() {
     data: {
       employeeId: 'EMP003',
       name: 'Michael Chen',
-      email: 'michael.chen@company.com',
+      email: 'michael.chen@ticketvisatravel.com',
       password: passMichael,
       designation: 'Product Designer',
       department: 'Design',
@@ -63,7 +63,7 @@ async function main() {
     data: {
       employeeId: 'EMP004',
       name: 'Emily Davis',
-      email: 'emily.davis@company.com',
+      email: 'emily.davis@ticketvisatravel.com',
       password: passEmily,
       designation: 'Marketing Specialist',
       department: 'Marketing',
@@ -76,7 +76,7 @@ async function main() {
     data: {
       employeeId: 'EMP005',
       name: 'David Wilson',
-      email: 'david.wilson@company.com',
+      email: 'david.wilson@ticketvisatravel.com',
       password: passDavid,
       designation: 'Finance Analyst',
       department: 'Finance',
@@ -264,12 +264,12 @@ async function main() {
   });
 
   console.log('\n--- SYSTEM CREDENTIALS ---');
-  console.log('Admin User: admin@company.com / admin123\n');
+  console.log('Admin User: admin@ticketvisatravel.com / admin123\n');
   console.log('--- EMPLOYEE CREDENTIALS ---');
-  console.log('Sarah Johnson: sarah.johnson@company.com / sarah123');
-  console.log('Michael Chen: michael.chen@company.com / michael123');
-  console.log('Emily Davis: emily.davis@company.com / emily123');
-  console.log('David Wilson: david.wilson@company.com / david123');
+  console.log('Sarah Johnson: sarah.johnson@ticketvisatravel.com / sarah123');
+  console.log('Michael Chen: michael.chen@ticketvisatravel.com / michael123');
+  console.log('Emily Davis: emily.davis@ticketvisatravel.com / emily123');
+  console.log('David Wilson: david.wilson@ticketvisatravel.com / david123');
   console.log('----------------------------\n');
 }
 

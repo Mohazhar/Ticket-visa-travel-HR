@@ -131,7 +131,7 @@ export default function ApplyLeavePage() {
     <div className="p-4 lg:p-6 space-y-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#ea580c]">Apply Leave</h1>
+        <h1 className="text-2xl font-bold text-[#004d98]">Apply Leave</h1>
         <p className="text-gray-500">Submit and track your leave requests</p>
       </div>
 
@@ -139,31 +139,31 @@ export default function ApplyLeavePage() {
         {/* Leave Balance Card */}
         <Card className="border-0 shadow-md">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-[#ea580c]">Leave Balance</CardTitle>
+            <CardTitle className="text-lg font-semibold text-[#004d98]">Leave Balance</CardTitle>
             <CardDescription>Your available leave days</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-[#ea580c]">Annual Leave</p>
+                  <p className="font-medium text-[#004d98]">Annual Leave</p>
                   <p className="text-sm text-gray-500">Vacation & personal time</p>
                 </div>
-                <span className="text-2xl font-bold text-[#ea580c]">{user?.leaveBalance?.annual || 0}</span>
+                <span className="text-2xl font-bold text-[#004d98]">{user?.leaveBalance?.annual || 0}</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                 <div>
                   <p className="font-medium text-green-700">Sick Leave</p>
                   <p className="text-sm text-gray-500">Medical & health</p>
                 </div>
-                <span className="text-2xl font-bold text-green-600">{user?.leaveBalance?.sick || 0}</span>
+                <span className="text-2xl font-bold text-[#004d98]">{user?.leaveBalance?.sick || 0}</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
                 <div>
                   <p className="font-medium text-purple-700">Personal Leave</p>
                   <p className="text-sm text-gray-500">Personal matters</p>
                 </div>
-                <span className="text-2xl font-bold text-purple-600">{user?.leaveBalance?.personal || 0}</span>
+                <span className="text-2xl font-bold text-[#004d98]">{user?.leaveBalance?.personal || 0}</span>
               </div>
             </div>
           </CardContent>
@@ -172,7 +172,7 @@ export default function ApplyLeavePage() {
         {/* Apply Leave Form */}
         <Card className="border-0 shadow-md lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-[#ea580c]">New Leave Request</CardTitle>
+            <CardTitle className="text-lg font-semibold text-[#004d98]">New Leave Request</CardTitle>
             <CardDescription>Fill in the details to submit a leave request</CardDescription>
           </CardHeader>
           <CardContent>
@@ -242,7 +242,7 @@ export default function ApplyLeavePage() {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#ea580c] hover:bg-[#c2410c] text-white"
+                className="w-full bg-[#004d98] hover:bg-[#003466] text-white"
               >
                 {submitting ? (
                   <>
@@ -264,13 +264,13 @@ export default function ApplyLeavePage() {
       {/* Leave History */}
       <Card className="border-0 shadow-md">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[#ea580c]">Leave History</CardTitle>
+          <CardTitle className="text-lg font-semibold text-[#004d98]">Leave History</CardTitle>
           <CardDescription>Your previous leave requests</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+              <Loader2 className="w-6 h-6 animate-spin text-[#004d98]" />
             </div>
           ) : leaves.length > 0 ? (
             <div className="overflow-x-auto">

@@ -324,7 +324,7 @@ export default function AdminPage() {
     }
 
     doc.setFontSize(16);
-    doc.setTextColor(234, 88, 12); // #ea580c
+    doc.setTextColor(0, 77, 152); // #004d98 (Logo Blue)
     doc.text(`Monthly Attendance Report - ${monthName} ${year}`, pageWidth / 2, 30, { align: 'center' });
 
     doc.setFontSize(10);
@@ -367,7 +367,7 @@ export default function AdminPage() {
       head: [['Employee Name', 'ID', 'Worked (Days)', 'Leaves (Days)', 'Total Days']],
       body: tableData,
       theme: 'grid',
-      headStyles: { fillColor: [234, 88, 12] },
+      headStyles: { fillColor: [0, 77, 152] }, // Logo Blue
       styles: { fontSize: 9 },
     });
 
@@ -450,7 +450,7 @@ export default function AdminPage() {
         ['Deductions', `- ${payslip.deductions.toLocaleString()}`],
       ],
       theme: 'grid',
-      headStyles: { fillColor: [234, 88, 12] },
+      headStyles: { fillColor: [0, 77, 152] }, // Logo Blue
       styles: { fontSize: 11, cellPadding: 5 },
     });
 
@@ -613,11 +613,11 @@ export default function AdminPage() {
       {/* Header and Personal Attendance */}
       <div className="mb-6 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-[#ea580c]">Admin Panel</h1>
+          <h1 className="text-2xl font-bold text-[#004d98]">Admin Panel</h1>
           <p className="text-gray-500">Manage employees, leaves, and payslips</p>
         </div>
 
-        <Card className="border border-orange-100 shadow-sm md:min-w-[320px]">
+        <Card className="border border-blue-100 shadow-sm md:min-w-[320px]">
           <CardContent className="p-4 flex flex-col gap-3">
             <div className="flex justify-between items-center whitespace-nowrap">
               <span className="text-sm font-medium text-gray-500 mr-4">My Attendance</span>
@@ -628,7 +628,7 @@ export default function AdminPage() {
 
             <div className="flex justify-around items-center">
               {!todayAttendance ? (
-                <Button size="sm" onClick={handleCheckIn} className="w-full bg-[#ea580c] hover:bg-[#c2410c] text-white">
+                <Button size="sm" onClick={handleCheckIn} className="w-full bg-[#004d98] hover:bg-[#003466] text-white">
                   <LogIn className="w-4 h-4 mr-2" />
                   Check In
                 </Button>
@@ -660,10 +660,10 @@ export default function AdminPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Employees</p>
-                <p className="text-2xl font-bold text-[#ea580c]">{employees.length}</p>
+                <p className="text-2xl font-bold text-[#004d98]">{employees.length}</p>
               </div>
-              <div className="hidden sm:flex w-12 h-12 rounded-full bg-orange-50 items-center justify-center">
-                <Users className="w-6 h-6 text-[#ea580c]" />
+              <div className="hidden sm:flex w-12 h-12 rounded-full bg-blue-50 items-center justify-center">
+                <Users className="w-6 h-6 text-[#004d98]" />
               </div>
             </div>
           </CardContent>
@@ -738,10 +738,10 @@ export default function AdminPage() {
           <Card className="border-0 shadow-md">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-semibold text-[#ea580c]">Employee Management</CardTitle>
+                <CardTitle className="text-lg font-semibold text-[#004d98]">Employee Management</CardTitle>
                 <CardDescription>Manage all employee records</CardDescription>
               </div>
-              <Button onClick={handleOpenAddEmployee} className="bg-[#ea580c] hover:bg-[#c2410c] text-white">
+              <Button onClick={handleOpenAddEmployee} className="bg-[#004d98] hover:bg-[#003466] text-white">
                 <UserPlus className="w-4 h-4 mr-2" />
                 Add Employee
               </Button>
@@ -749,7 +749,7 @@ export default function AdminPage() {
             <CardContent>
               {loading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+                  <Loader2 className="w-6 h-6 animate-spin text-[#004d98]" />
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -820,13 +820,13 @@ export default function AdminPage() {
         <TabsContent value="leaves">
           <Card className="border-0 shadow-md">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-[#ea580c]">Leave Requests</CardTitle>
+              <CardTitle className="text-lg font-semibold text-[#004d98]">Leave Requests</CardTitle>
               <CardDescription>Approve or reject employee leave requests</CardDescription>
             </CardHeader>
             <CardContent>
               {loading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+                  <Loader2 className="w-6 h-6 animate-spin text-[#004d98]" />
                 </div>
               ) : leaves.length > 0 ? (
                 <div className="overflow-x-auto">
@@ -928,10 +928,10 @@ export default function AdminPage() {
           <Card className="border-0 shadow-md">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-semibold text-[#ea580c]">Payslip Management</CardTitle>
+                <CardTitle className="text-lg font-semibold text-[#004d98]">Payslip Management</CardTitle>
                 <CardDescription>Upload and manage employee payslips</CardDescription>
               </div>
-              <Button onClick={() => setPayslipDialogOpen(true)} className="bg-[#ea580c] hover:bg-[#c2410c] text-white">
+              <Button onClick={() => setPayslipDialogOpen(true)} className="bg-[#004d98] hover:bg-[#003466] text-white">
                 <DollarSign className="w-4 h-4 mr-2" />
                 Upload Payslip
               </Button>
@@ -939,7 +939,7 @@ export default function AdminPage() {
             <CardContent>
               {loading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+                  <Loader2 className="w-6 h-6 animate-spin text-[#004d98]" />
                 </div>
               ) : payslips.length > 0 ? (
                 <div className="overflow-x-auto">
@@ -1015,7 +1015,7 @@ export default function AdminPage() {
           <Card className="border-0 shadow-md">
             <CardHeader className="flex flex-row justify-between items-center pb-2">
               <div>
-                <CardTitle className="text-lg font-semibold text-[#ea580c]">Attendance Records</CardTitle>
+                <CardTitle className="text-lg font-semibold text-[#004d98]">Attendance Records</CardTitle>
                 <CardDescription>View all employee check-in and check-out logs</CardDescription>
               </div>
               <div className="flex items-center gap-3">
@@ -1023,7 +1023,7 @@ export default function AdminPage() {
                   onClick={downloadAttendanceReport}
                   variant="outline"
                   size="sm"
-                  className="border-[#ea580c] text-[#ea580c] hover:bg-orange-50"
+                  className="border-[#004d98] text-[#004d98] hover:bg-blue-50"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download Report
@@ -1037,7 +1037,7 @@ export default function AdminPage() {
             <CardContent>
               {loading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+                  <Loader2 className="w-6 h-6 animate-spin text-[#004d98]" />
                 </div>
               ) : attendances.length > 0 ? (
                 <div className="overflow-x-auto">
@@ -1131,7 +1131,7 @@ export default function AdminPage() {
       <Dialog open={employeeDialogOpen} onOpenChange={(open) => { setEmployeeDialogOpen(open); if (!open) resetEmployeeForm(); }}>
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-[#ea580c]">
+            <DialogTitle className="text-[#004d98]">
               {editingEmployee ? 'Edit Employee' : 'Add New Employee'}
             </DialogTitle>
             <DialogDescription>
@@ -1265,7 +1265,7 @@ export default function AdminPage() {
               <Button type="button" variant="outline" onClick={() => { setEmployeeDialogOpen(false); resetEmployeeForm(); }}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={submitting} className="bg-[#ea580c] hover:bg-[#c2410c] text-white">
+              <Button type="submit" disabled={submitting} className="bg-[#004d98] hover:bg-[#003466] text-white">
                 {submitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -1284,7 +1284,7 @@ export default function AdminPage() {
       <Dialog open={payslipDialogOpen} onOpenChange={(open) => { setPayslipDialogOpen(open); if (!open) resetPayslipForm(); }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-[#ea580c]">
+            <DialogTitle className="text-[#004d98]">
               {editingPayslip ? 'Edit Payslip' : 'Upload Payslip'}
             </DialogTitle>
             <DialogDescription>
@@ -1387,7 +1387,7 @@ export default function AdminPage() {
               <Button type="button" variant="outline" onClick={() => setPayslipDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={submitting} className="bg-[#ea580c] hover:bg-[#c2410c] text-white">
+              <Button type="submit" disabled={submitting} className="bg-[#004d98] hover:bg-[#003466] text-white">
                 {submitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

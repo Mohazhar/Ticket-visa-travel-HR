@@ -60,9 +60,9 @@ function NavContent({ currentPage, userRole, userName, userDesignation, userId, 
   }, [userId]);
   return (
     <div className="flex flex-col h-full">
-      <div className="p-6 border-b border-[#ea580c]/20">
+      <div className="p-6 border-b border-[#004d98]/20">
         <div className="flex items-center justify-center">
-          <img src="/logo.png" alt="Ravaan Space Logo" className="h-10 w-auto object-contain" />
+          <img src="/logo.png" alt="Ticket Visa Travel Logo" className="h-10 w-auto object-contain" />
         </div>
       </div>
 
@@ -73,7 +73,7 @@ function NavContent({ currentPage, userRole, userName, userDesignation, userId, 
             key={item.id}
             onClick={() => onNavigate(item.id)}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all ${currentPage === item.id
-              ? 'bg-[#ea580c] text-white shadow-md'
+              ? 'bg-[#004d98] text-white shadow-md'
               : 'text-gray-600 hover:bg-gray-100'
               }`}
           >
@@ -90,7 +90,7 @@ function NavContent({ currentPage, userRole, userName, userDesignation, userId, 
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all ${currentPage === item.id
-                  ? 'bg-[#ea580c] text-white shadow-md'
+                  ? 'bg-[#004d98] text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-100'
                   }`}
               >
@@ -104,11 +104,11 @@ function NavContent({ currentPage, userRole, userName, userDesignation, userId, 
 
       <div className="p-4 border-t border-gray-200">
         <div className="flex items-center gap-3 mb-3 p-2 rounded-lg bg-gray-50">
-          <Avatar className="w-9 h-9 bg-[#ea580c]">
+          <Avatar className="w-9 h-9 bg-[#004d98]">
             {navProfilePhoto ? (
               <img src={navProfilePhoto} alt={userName} className="w-full h-full object-cover" />
             ) : (
-              <AvatarFallback className="bg-[#ea580c] text-white text-sm">
+              <AvatarFallback className="bg-[#004d98] text-white text-sm">
                 {userName?.charAt(0) || 'U'}
               </AvatarFallback>
             )}
@@ -150,13 +150,13 @@ export default function HRLayout({ children, currentPage, onNavigate }: HRLayout
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-[#ea580c] mr-1"
+              className="h-8 w-8 text-[#004d98] mr-1"
               onClick={() => window.history.back()}
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
           )}
-          <img src="/logo.png" alt="Ravaan Space Logo" className="h-8 w-auto object-contain" />
+          <img src="/logo.png" alt="Ticket Visa Travel Logo" className="h-8 w-auto object-contain" />
         </div>
 
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
@@ -209,7 +209,7 @@ export default function HRLayout({ children, currentPage, onNavigate }: HRLayout
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-gray-600 hover:text-[#ea580c] flex items-center gap-2"
+                className="text-gray-600 hover:text-[#004d98] flex items-center gap-2"
                 onClick={() => window.history.back()}
               >
                 <ArrowLeft className="w-4 h-4" />

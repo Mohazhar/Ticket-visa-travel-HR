@@ -142,7 +142,7 @@ export default function ExpensesPage() {
     const pageWidth = doc.internal.pageSize.getWidth();
 
     // Header styling
-    doc.setFillColor(234, 88, 12); // #ea580c
+    doc.setFillColor(0, 77, 152); // #004d98 (Logo Blue)
     doc.rect(0, 0, 210, 40, 'F');
 
     // Fetch logo
@@ -345,7 +345,7 @@ export default function ExpensesPage() {
 
     link.href = url;
     const categoryName = categoryFilter === 'all' ? 'All' : categoryFilter.replace(/\s+/g, '_');
-    link.setAttribute('download', `ravaan_space_expenses_${categoryName}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `ticket_visa_travel_expenses_${categoryName}_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -375,16 +375,16 @@ export default function ExpensesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#ea580c]">Expenses</h1>
+          <h1 className="text-2xl font-bold text-[#004d98]">Expenses</h1>
           <p className="text-gray-500">Manage company expenses and track spending</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           
-          <Button onClick={downloadAllExpensesCSV} variant="outline" className="border-[#ea580c] text-[#ea580c] hover:bg-[#ea580c] hover:text-white">
+          <Button onClick={downloadAllExpensesCSV} variant="outline" className="border-[#004d98] text-[#004d98] hover:bg-[#004d98] hover:text-white">
             <Download className="w-4 h-4 mr-2" />
             Download
           </Button>
-          <Button onClick={handleOpenAdd} className="bg-[#ea580c] hover:bg-[#c2410c] text-white">
+          <Button onClick={handleOpenAdd} className="bg-[#004d98] hover:bg-[#003466] text-white">
             <Plus className="w-4 h-4 mr-2" />
             Add Expense
           </Button>
@@ -398,7 +398,7 @@ export default function ExpensesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Expenses</p>
-                <p className="text-2xl font-bold text-[#ea580c]">₹{totalExpenses.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-[#004d98]">₹{totalExpenses.toLocaleString()}</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
                 <TrendingDown className="w-6 h-6 text-red-500" />
@@ -412,10 +412,10 @@ export default function ExpensesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Records</p>
-                <p className="text-2xl font-bold text-[#ea580c]">{filteredExpenses.length}</p>
+                <p className="text-2xl font-bold text-[#004d98]">{filteredExpenses.length}</p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
-                <Receipt className="w-6 h-6 text-[#ea580c]" />
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                <Receipt className="w-6 h-6 text-[#004d98]" />
               </div>
             </div>
           </CardContent>
@@ -441,7 +441,7 @@ export default function ExpensesPage() {
       {/* Monthly Summary */}
       <Card className="border-0 shadow-md">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[#ea580c]">Monthly Summary</CardTitle>
+          <CardTitle className="text-lg font-semibold text-[#004d98]">Monthly Summary</CardTitle>
           <CardDescription>Expense breakdown by month</CardDescription>
         </CardHeader>
         <CardContent>
@@ -454,7 +454,7 @@ export default function ExpensesPage() {
                 return (
                   <div key={month} className="p-3 rounded-lg bg-gray-50 text-center">
                     <p className="text-xs text-gray-500">{monthNames[parseInt(monthNum) - 1]} {year}</p>
-                    <p className="font-bold text-[#ea580c]">₹{amount.toLocaleString()}</p>
+                    <p className="font-bold text-[#004d98]">₹{amount.toLocaleString()}</p>
                   </div>
                 );
               })}
@@ -466,12 +466,12 @@ export default function ExpensesPage() {
       <Card className="border-0 shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <div>
-            <CardTitle className="text-lg font-semibold text-[#ea580c]">Expense Records</CardTitle>
+            <CardTitle className="text-lg font-semibold text-[#004d98]">Expense Records</CardTitle>
             <CardDescription>All company expense records</CardDescription>
           </div>
           <div className="w-48">
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="border-[#ea580c] text-[#ea580c]">
+              <SelectTrigger className="border-[#004d98] text-[#004d98]">
                 <SelectValue placeholder="Filter by Category" />
               </SelectTrigger>
               <SelectContent>
@@ -486,7 +486,7 @@ export default function ExpensesPage() {
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-[#ea580c]" />
+              <Loader2 className="w-6 h-6 animate-spin text-[#004d98]" />
             </div>
           ) : expenses.length > 0 ? (
             <div className="overflow-x-auto">
@@ -518,7 +518,7 @@ export default function ExpensesPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="bg-orange-50 hover:bg-orange-100 text-orange-600 border-orange-200"
+                            className="bg-blue-50 hover:bg-blue-100 text-[#004d98] border-blue-200"
                             onClick={() => handleOpenView(expense)}
                           >
                             <Eye className="w-4 h-4" />
@@ -565,7 +565,7 @@ export default function ExpensesPage() {
       <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-[#ea580c]">
+            <DialogTitle className="text-[#004d98]">
               {editingExpense ? 'Edit Expense' : 'Add New Expense'}
             </DialogTitle>
             <DialogDescription>
@@ -643,7 +643,7 @@ export default function ExpensesPage() {
               <Button type="button" variant="outline" onClick={() => { setDialogOpen(false); resetForm(); }}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={submitting} className="bg-[#ea580c] hover:bg-[#c2410c] text-white">
+              <Button type="submit" disabled={submitting} className="bg-[#004d98] hover:bg-[#003466] text-white">
                 {submitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -663,9 +663,9 @@ export default function ExpensesPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <div className="flex justify-center mb-4">
-              <img src="/logo.png" alt="Ravaan Space Logo" className="h-10 w-auto object-contain" />
+              <img src="/logo.png" alt="Ticket Visa Travel Logo" className="h-10 w-auto object-contain" />
             </div>
-            <DialogTitle className="text-[#ea580c] flex items-center gap-2">
+            <DialogTitle className="text-[#004d98] flex items-center gap-2">
               <Receipt className="w-5 h-5" />
               Expense Details
             </DialogTitle>
@@ -687,7 +687,7 @@ export default function ExpensesPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 font-medium uppercase">Amount</p>
-                  <p className="font-semibold text-[#ea580c] text-lg">₹{viewingExpense.amount.toLocaleString()}</p>
+                  <p className="font-semibold text-[#004d98] text-lg">₹{viewingExpense.amount.toLocaleString()}</p>
                 </div>
               </div>
 
@@ -709,7 +709,7 @@ export default function ExpensesPage() {
           )}
           <DialogFooter className="mt-6 flex sm:justify-between items-center">
             <Button variant="outline" onClick={() => setViewDialogOpen(false)}>Close</Button>
-            <Button onClick={downloadExpensePdf} className="bg-[#ea580c] hover:bg-[#c2410c] text-white">
+            <Button onClick={downloadExpensePdf} className="bg-[#004d98] hover:bg-[#003466] text-white">
               <Download className="w-4 h-4 mr-2" />
               Download PDF
             </Button>

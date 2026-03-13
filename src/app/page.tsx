@@ -51,8 +51,8 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-[#ea580c] mx-auto mb-4" />
-          <p className="text-gray-500">Loading Ravaan Space...</p>
+          <Loader2 className="w-10 h-10 animate-spin text-[#004d98] mx-auto mb-4" />
+          <p className="text-gray-500">Loading Ticket Visa Travel...</p>
         </div>
       </div>
     );
