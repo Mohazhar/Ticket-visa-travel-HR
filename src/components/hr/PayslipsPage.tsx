@@ -62,7 +62,7 @@ export default function PayslipsPage() {
     };
 
     fetchPayslips();
-  }, []);
+  }, [user?.id]);
 
   const handleViewPayslip = (payslip: Payslip) => {
     setSelectedPayslip(payslip);

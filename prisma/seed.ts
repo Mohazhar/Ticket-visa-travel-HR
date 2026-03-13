@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Clear existing data
+  await prisma.attendance.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.expense.deleteMany();
   await prisma.payslip.deleteMany();

@@ -13,6 +13,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    console.log('API Payslips - User:', user.email, 'Role:', user.role);
+
     const { searchParams } = new URL(request.url);
     const employeeId = searchParams.get('employeeId');
 
@@ -42,6 +44,8 @@ export async function GET(request: NextRequest) {
         orderBy: [{ year: 'desc' }, { month: 'desc' }],
       });
     }
+
+    console.log('API Payslips - Found:', payslips.length);
 
     return NextResponse.json({ success: true, payslips });
   } catch (error) {
