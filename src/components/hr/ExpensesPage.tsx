@@ -72,6 +72,7 @@ export default function ExpensesPage() {
   const [deletingExpense, setDeletingExpense] = useState<Expense | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingExpense, setViewingExpense] = useState<Expense | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState('all');
 
   const [formData, setFormData] = useState({
     date: '',
@@ -296,13 +297,13 @@ export default function ExpensesPage() {
   };
 
   const downloadAllExpensesCSV = () => {
-    if (expenses.length === 0) return;
+    if (filteredExpenses.length === 0) return;
 
     // Build standard CSV header row
     const headers = ['Date', 'Category', 'Description', 'Amount', 'Payment Method', 'Added By (Employee ID)'];
 
-    // Convert all expenses
-    const rows = expenses.map(expense => [
+    // Convert filtered expenses
+    const rows = filteredExpenses.map(expense => [
       expense.date,
       `"${expense.category}"`,
       `"${expense.description.replace(/"/g, '""')}"`, // escape quotes natively
@@ -312,9 +313,9 @@ export default function ExpensesPage() {
     ]);
 
     // Calculate Summaries for CSV
-    const totalAmount = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const totalAmount = filteredExpenses.reduce((sum, exp) => sum + exp.amount, 0);
     const catTotals: Record<string, number> = {};
-    expenses.forEach(exp => {
+    filteredExpenses.forEach(exp => {
       catTotals[exp.category] = (catTotals[exp.category] || 0) + exp.amount;
     });
 
@@ -357,11 +358,16 @@ export default function ExpensesPage() {
     return acc;
   }, {} as Record<string, number>);
 
-  const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
   const categorySummary = expenses.reduce((acc, expense) => {
     acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
     return acc;
   }, {} as Record<string, number>);
+
+  const filteredExpenses = categoryFilter === 'all' 
+    ? expenses 
+    : expenses.filter(e => e.category === categoryFilter);
+
+  const totalExpenses = filteredExpenses.reduce((acc, e) => acc + e.amount, 0);
 
   return (
     <div className="p-4 lg:p-6 space-y-6">
@@ -371,7 +377,20 @@ export default function ExpensesPage() {
           <h1 className="text-2xl font-bold text-[#ea580c]">Expenses</h1>
           <p className="text-gray-500">Manage company expenses and track spending</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="w-48">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="border-[#ea580c] text-[#ea580c]">
+                <SelectValue placeholder="Filter by Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map(cat => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <Button onClick={downloadAllExpensesCSV} variant="outline" className="border-[#ea580c] text-[#ea580c] hover:bg-[#ea580c] hover:text-white">
             <Download className="w-4 h-4 mr-2" />
             Download
@@ -404,7 +423,7 @@ export default function ExpensesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Records</p>
-                <p className="text-2xl font-bold text-[#ea580c]">{expenses.length}</p>
+                <p className="text-2xl font-bold text-[#ea580c]">{filteredExpenses.length}</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
                 <Receipt className="w-6 h-6 text-[#ea580c]" />
@@ -480,7 +499,7 @@ export default function ExpensesPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {expenses.map((expense) => (
+                  {filteredExpenses.map((expense) => (
                     <TableRow key={expense.id}>
                       <TableCell className="font-medium">{expense.date}</TableCell>
                       <TableCell>
