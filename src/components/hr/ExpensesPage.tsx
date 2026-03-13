@@ -344,7 +344,8 @@ export default function ExpensesPage() {
     const link = document.createElement('a');
 
     link.href = url;
-    link.setAttribute('download', `ravaan_space_expenses_${new Date().toISOString().split('T')[0]}.csv`);
+    const categoryName = categoryFilter === 'all' ? 'All' : categoryFilter.replace(/\s+/g, '_');
+    link.setAttribute('download', `ravaan_space_expenses_${categoryName}_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -378,19 +379,7 @@ export default function ExpensesPage() {
           <p className="text-gray-500">Manage company expenses and track spending</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="w-48">
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="border-[#ea580c] text-[#ea580c]">
-                <SelectValue placeholder="Filter by Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map(cat => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          
           <Button onClick={downloadAllExpensesCSV} variant="outline" className="border-[#ea580c] text-[#ea580c] hover:bg-[#ea580c] hover:text-white">
             <Download className="w-4 h-4 mr-2" />
             Download
@@ -479,6 +468,19 @@ export default function ExpensesPage() {
           <CardTitle className="text-lg font-semibold text-[#ea580c]">Expense Records</CardTitle>
           <CardDescription>All company expense records</CardDescription>
         </CardHeader>
+        <div className="w-48">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="border-[#ea580c] ml-350 mt-[-50] text-[#ea580c]">
+                <SelectValue placeholder="Filter by Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map(cat => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center py-8">
