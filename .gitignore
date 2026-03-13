@@ -29,6 +29,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
+*.txt
+*.js
+!tailwind.config.ts
+!next.config.ts
+!postcss.config.mjs
+!eslint.config.mjs
 
 # env files (can opt-in for committing if needed)
 .env*
