@@ -19,7 +19,7 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, email, designation, department, role, leaveBalance, password } = body;
+    const { name, email, designation, department, role, canAddExpense, leaveBalance, password } = body;
 
     const updateData: Record<string, unknown> = {
       name,
@@ -27,6 +27,7 @@ export async function PUT(
       designation,
       department,
       role,
+      canAddExpense,
     };
 
     if (leaveBalance) {

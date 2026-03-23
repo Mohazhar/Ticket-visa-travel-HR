@@ -99,15 +99,23 @@ export default function AttendancePage() {
                                                         {breaks.length === 0 ? (
                                                             <span className="text-xs text-gray-400 italic">N/A</span>
                                                         ) : (
-                                                            breaks.map((b: any, idx: number) => (
+                                                            breaks.map((b: any, idx: number) => {
+                                                                let duration = '';
+                                                                if (b.end && b.start) {
+                                                                    const diffMs = new Date(b.end).getTime() - new Date(b.start).getTime();
+                                                                    const diffMins = Math.round(diffMs / 60000);
+                                                                    if (diffMins > 0) duration = ` - ${diffMins}m`;
+                                                                }
+                                                                return (
                                                                 <Badge
                                                                     key={idx}
                                                                     variant="outline"
                                                                     className={`${!b.end ? 'bg-blue-50 text-blue-700 border-blue-200 animate-pulse' : 'bg-gray-50 text-gray-500'} text-[10px] px-1 py-0`}
                                                                 >
-                                                                    {b.type.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                                                    {b.type.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}{duration}
                                                                 </Badge>
-                                                            ))
+                                                                );
+                                                            })
                                                         )}
                                                     </div>
                                                 </TableCell>

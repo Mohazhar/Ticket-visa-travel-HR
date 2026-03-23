@@ -83,6 +83,7 @@ export default function ExpensesPage() {
   });
 
   const isAdmin = user?.role === 'admin';
+  const canAddExpense = isAdmin || user?.canAddExpense;
 
   const fetchExpenses = async () => {
     try {
@@ -384,10 +385,12 @@ export default function ExpensesPage() {
             <Download className="w-4 h-4 mr-2" />
             Download
           </Button>
-          <Button onClick={handleOpenAdd} className="bg-[#004d98] hover:bg-[#003466] text-white">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Expense
-          </Button>
+          {canAddExpense && (
+            <Button onClick={handleOpenAdd} className="bg-[#004d98] hover:bg-[#003466] text-white">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Expense
+            </Button>
+          )}
         </div>
       </div>
 

@@ -36,9 +36,9 @@ export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser();
 
-    if (!user) {
+    if (!user || (user.role !== 'admin' && !user.canAddExpense)) {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
+        { success: false, error: 'You do not have permission to add expenses' },
         { status: 403 }
       );
     }

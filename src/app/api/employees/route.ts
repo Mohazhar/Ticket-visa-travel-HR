@@ -23,6 +23,7 @@ export async function GET() {
         designation: true,
         department: true,
         role: true,
+        canAddExpense: true,
         leaveBalance: true,
         createdAt: true,
       },
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { employeeId, name, email, password, designation, department, role, leaveBalance } = body;
+    const { employeeId, name, email, password, designation, department, role, canAddExpense, leaveBalance } = body;
 
     if (!employeeId || !name || !email || !password || !designation || !department) {
       return NextResponse.json(
@@ -89,6 +90,7 @@ export async function POST(request: NextRequest) {
         designation,
         department,
         role: role || 'employee',
+        canAddExpense: canAddExpense || false,
         leaveBalance: JSON.stringify(leaveBalance || { annual: 15, sick: 10, personal: 5 }),
       },
     });
@@ -103,6 +105,7 @@ export async function POST(request: NextRequest) {
         designation: employee.designation,
         department: employee.department,
         role: employee.role,
+        canAddExpense: employee.canAddExpense,
         leaveBalance: JSON.parse(employee.leaveBalance),
       },
     });

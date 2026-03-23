@@ -19,6 +19,7 @@ model Employee {
   designation  String
   department   String
   role         String   @default("employee") // employee or admin
+  canAddExpense Boolean @default(false)
   leaveBalance String   @default("{\"annual\":15,\"sick\":10,\"personal\":5}") // JSON string
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

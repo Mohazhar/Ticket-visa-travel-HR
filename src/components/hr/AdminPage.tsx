@@ -41,7 +41,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Users, UserPlus, Check, X, Loader2, FileText, DollarSign, Trash2, Edit, Download, Clock, LogIn, LogOut, CheckCircle, CalendarDays, Coffee } from 'lucide-react';
+import { Users, UserPlus, Check, X, Loader2, FileText, DollarSign, Trash2, Edit, Download, Clock, LogIn, LogOut, CheckCircle, CalendarDays, Coffee, Utensils } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -58,6 +58,7 @@ interface Employee {
     sick: number;
     personal: number;
   };
+  canAddExpense: boolean;
 }
 
 interface Leave {
@@ -122,6 +123,7 @@ export default function AdminPage() {
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [editingPayslip, setEditingPayslip] = useState<Payslip | null>(null);
   const [deletingEmployee, setDeletingEmployee] = useState<Employee | null>(null);
+  const [addLeaveDialogOpen, setAddLeaveDialogOpen] = useState(false);
 
   // Forms
   const [employeeForm, setEmployeeForm] = useState({
@@ -135,6 +137,7 @@ export default function AdminPage() {
     annualLeave: '15',
     sickLeave: '10',
     personalLeave: '5',
+    canAddExpense: false,
   });
 
   const [payslipForm, setPayslipForm] = useState({
@@ -144,6 +147,14 @@ export default function AdminPage() {
     basicSalary: '',
     allowances: '',
     deductions: '',
+  });
+
+  const [leaveForm, setLeaveForm] = useState({
+    employeeId: '',
+    leaveType: '',
+    fromDate: '',
+    toDate: '',
+    reason: '',
   });
 
   const isAdmin = user?.role === 'admin';
@@ -183,8 +194,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 10000); // Poll every 10 seconds
-    return () => clearInterval(interval);
+    // Polling disabled
+    // const interval = setInterval(fetchData, 10000); 
+    // return () => clearInterval(interval);
   }, []);
 
   const resetEmployeeForm = () => {
@@ -199,6 +211,7 @@ export default function AdminPage() {
       annualLeave: '15',
       sickLeave: '10',
       personalLeave: '5',
+      canAddExpense: false,
     });
     setEditingEmployee(null);
   };
@@ -221,6 +234,7 @@ export default function AdminPage() {
       annualLeave: employee.leaveBalance.annual.toString(),
       sickLeave: employee.leaveBalance.sick.toString(),
       personalLeave: employee.leaveBalance.personal.toString(),
+      canAddExpense: employee.canAddExpense || false,
     });
     setEmployeeDialogOpen(true);
   };
@@ -243,6 +257,7 @@ export default function AdminPage() {
           sick: parseInt(employeeForm.sickLeave),
           personal: parseInt(employeeForm.personalLeave),
         },
+        canAddExpense: employeeForm.canAddExpense,
       };
 
       if (editingEmployee) {
@@ -296,6 +311,30 @@ export default function AdminPage() {
       }
     } catch (err) {
       console.error('Error deleting employee:', err);
+    }
+  };
+
+  const handleAdminAddLeave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/leaves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(leaveForm)
+      });
+      const data = await res.json();
+      if (data.success) {
+        fetchData();
+        setAddLeaveDialogOpen(false);
+        setLeaveForm({ employeeId: '', leaveType: '', fromDate: '', toDate: '', reason: '' });
+      } else {
+        alert(data.error || 'Failed to add leave');
+      }
+    } catch (err) {
+      console.error('Error adding leave:', err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -592,6 +631,41 @@ export default function AdminPage() {
     }
   };
 
+  const handleBreakAction = async (breakType: string) => {
+    try {
+      const res = await fetch('/api/attendance', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ breakType })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTodayAttendance(data.attendance);
+        fetchData(); // Refresh list to update stats instantly
+      }
+    } catch (error) {
+      console.error('Break action error:', error);
+    }
+  };
+
+  const getBreakStatus = (breakType: string) => {
+    if (!todayAttendance || !todayAttendance.breaks) return 'none';
+    let breaks = [];
+    try {
+      breaks = typeof todayAttendance.breaks === 'string'
+        ? JSON.parse(todayAttendance.breaks)
+        : todayAttendance.breaks;
+      if (!Array.isArray(breaks)) breaks = [];
+    } catch (e) {
+      breaks = [];
+    }
+    const specificBreak = breaks.find((b: any) => b.type === breakType && !b.end);
+    if (specificBreak) return 'active';
+    const finishedBreak = breaks.find((b: any) => b.type === breakType && b.end);
+    if (finishedBreak) return 'completed';
+    return 'none';
+  };
+
   const pendingLeaves = leaves.filter((l) => l.status === 'pending');
 
   if (!isAdmin) {
@@ -633,11 +707,51 @@ export default function AdminPage() {
                   Check In
                 </Button>
               ) : !todayAttendance.checkOut ? (
-                <div className="w-full flex gap-3">
-                  <div className="flex-1 text-center bg-gray-50 rounded px-2 py-1.5 border border-gray-100 font-medium text-gray-700 text-sm flex items-center justify-center">
-                    {new Date(todayAttendance.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                <div className="w-full space-y-3">
+                  <div className="w-full flex gap-3">
+                    <div className="flex-1 text-center bg-gray-50 rounded px-2 py-1.5 border border-gray-100 font-medium text-gray-700 text-sm flex items-center justify-center">
+                      {new Date(todayAttendance.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
                   </div>
-                  <Button size="sm" onClick={handleCheckOut} variant="outline" className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700">
+                  
+                  {/* Admin Break Management */}
+                  <div className="grid grid-cols-1 gap-2 pt-2 border-t border-gray-100">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left">Breaks</p>
+                    <div className="flex flex-col gap-2">
+                      {[
+                        { id: 'morning_tea', label: 'Morning Tea', icon: Coffee },
+                        { id: 'lunch', label: 'Lunch Break', icon: Utensils },
+                        { id: 'evening_tea', label: 'Evening Tea', icon: Coffee },
+                      ].map((b) => {
+                        const status = getBreakStatus(b.id);
+                        return (
+                          <Button
+                            key={b.id}
+                            size="sm"
+                            variant={status === 'active' ? 'default' : 'outline'}
+                            disabled={status === 'completed'}
+                            onClick={() => handleBreakAction(b.id)}
+                            className={`justify-start h-8 text-xs transition-all ${status === 'active'
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                              : status === 'completed'
+                                ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                : 'border-blue-200 text-blue-600 hover:bg-blue-50'
+                              }`}
+                          >
+                            <b.icon className="w-3 h-3 mr-2" />
+                            <span className="flex-1 text-left">{b.label}</span>
+                            {status === 'active' ? (
+                              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full animate-pulse">On Break</span>
+                            ) : status === 'completed' ? (
+                              <span className="text-[10px] text-gray-400 uppercase">Done</span>
+                            ) : null}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <Button size="sm" onClick={handleCheckOut} variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700">
                     <LogOut className="w-4 h-4 mr-2" />
                     Out
                   </Button>
@@ -762,6 +876,7 @@ export default function AdminPage() {
                         <TableHead>Department</TableHead>
                         <TableHead>Designation</TableHead>
                         <TableHead>Role</TableHead>
+                        <TableHead>Exp. Permission</TableHead>
                         <TableHead>Leave Balance</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
@@ -777,6 +892,11 @@ export default function AdminPage() {
                           <TableCell>
                             <Badge variant={employee.role === 'admin' ? 'default' : 'secondary'}>
                               {employee.role}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={employee.canAddExpense ? "default" : "outline"} className={employee.canAddExpense ? "bg-green-100 text-green-700 border-green-200" : "text-gray-400"}>
+                              {employee.canAddExpense ? 'Granted' : 'None'}
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -819,9 +939,15 @@ export default function AdminPage() {
         {/* Leave Requests Tab */}
         <TabsContent value="leaves">
           <Card className="border-0 shadow-md">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-[#004d98]">Leave Requests</CardTitle>
-              <CardDescription>Approve or reject employee leave requests</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <div>
+                <CardTitle className="text-lg font-semibold text-[#004d98]">Leave & Emergency</CardTitle>
+                <CardDescription>Approve requests or log sudden leaves</CardDescription>
+              </div>
+              <Button onClick={() => setAddLeaveDialogOpen(true)} className="bg-[#004d98] hover:bg-[#003466] text-white">
+                <CalendarDays className="w-4 h-4 mr-2" />
+                Log Leave
+              </Button>
             </CardHeader>
             <CardContent>
               {loading ? (
@@ -1076,13 +1202,19 @@ export default function AdminPage() {
                                 ) : (
                                   breaks.map((b: any, idx: number) => {
                                     const isActive = !b.end;
+                                    let duration = '';
+                                    if (b.end && b.start) {
+                                      const diffMs = new Date(b.end).getTime() - new Date(b.start).getTime();
+                                      const diffMins = Math.round(diffMs / 60000);
+                                      if (diffMins > 0) duration = ` - ${diffMins}m`;
+                                    }
                                     return (
                                       <Badge
                                         key={idx}
                                         variant="outline"
                                         className={`${isActive ? 'bg-blue-50 text-blue-700 border-blue-200 animate-pulse' : 'bg-gray-50 text-gray-500'} text-[10px] px-1 py-0`}
                                       >
-                                        {b.type.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                        {b.type.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}{duration}
                                       </Badge>
                                     );
                                   })
@@ -1261,6 +1393,19 @@ export default function AdminPage() {
               </div>
             </div>
 
+            <div className="flex items-center space-x-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
+              <input
+                type="checkbox"
+                id="canAddExpense"
+                checked={employeeForm.canAddExpense}
+                onChange={(e) => setEmployeeForm({ ...employeeForm, canAddExpense: e.target.checked })}
+                className="w-4 h-4 text-[#004d98] border-gray-300 rounded focus:ring-[#004d98]"
+              />
+              <label htmlFor="canAddExpense" className="text-sm font-medium text-gray-700 cursor-pointer">
+                Allow adding company expenses
+              </label>
+            </div>
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => { setEmployeeDialogOpen(false); resetEmployeeForm(); }}>
                 Cancel
@@ -1419,6 +1564,92 @@ export default function AdminPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Log Leave Dialog */}
+      <Dialog open={addLeaveDialogOpen} onOpenChange={setAddLeaveDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Log Emergency/Sudden Leave</DialogTitle>
+            <DialogDescription>Add a leave record on behalf of an employee.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleAdminAddLeave} className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="employeeId">Employee</Label>
+              <Select
+                value={leaveForm.employeeId}
+                onValueChange={(val) => setLeaveForm({ ...leaveForm, employeeId: val })}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select employee" />
+                </SelectTrigger>
+                <SelectContent>
+                  {employees.map(emp => (
+                    <SelectItem key={emp.id} value={emp.id}>{emp.name} ({emp.employeeId})</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="leaveType">Leave Type</Label>
+              <Select
+                value={leaveForm.leaveType}
+                onValueChange={(val) => setLeaveForm({ ...leaveForm, leaveType: val })}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="annual">Annual Leave</SelectItem>
+                  <SelectItem value="sick">Sick Leave</SelectItem>
+                  <SelectItem value="personal">Personal Leave</SelectItem>
+                  <SelectItem value="unpaid">Unpaid Leave</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="fromDate">From</Label>
+                <Input
+                  id="fromDate"
+                  type="date"
+                  value={leaveForm.fromDate}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, fromDate: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="toDate">To</Label>
+                <Input
+                  id="toDate"
+                  type="date"
+                  value={leaveForm.toDate}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, toDate: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="reason">Reason / Note</Label>
+              <Input
+                id="reason"
+                placeholder="Admin logged: emergency leave..."
+                value={leaveForm.reason}
+                onChange={(e) => setLeaveForm({ ...leaveForm, reason: e.target.value })}
+                required
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setAddLeaveDialogOpen(false)}>Cancel</Button>
+              <Button type="submit" disabled={submitting} className="bg-[#004d98] hover:bg-[#003466] text-white">
+                {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                Save Leave
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

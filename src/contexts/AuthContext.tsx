@@ -10,6 +10,7 @@ export interface User {
   designation: string;
   department: string;
   role: string;
+  canAddExpense: boolean;
   leaveBalance: {
     annual: number;
     sick: number;

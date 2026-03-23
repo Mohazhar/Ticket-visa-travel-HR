@@ -64,9 +64,9 @@ export function NotificationsDropdown({
 
     useEffect(() => {
         fetchNotifications();
-        // Setup fast polling every 5 seconds for immediate notifications
-        const interval = setInterval(fetchNotifications, 5000);
-        return () => clearInterval(interval);
+        // Setup fast polling disabled
+        // const interval = setInterval(fetchNotifications, 5000);
+        // return () => clearInterval(interval);
     }, []);
 
     const markAsRead = async (id?: string) => {

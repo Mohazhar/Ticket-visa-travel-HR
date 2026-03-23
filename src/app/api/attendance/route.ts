@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { autoCheckOutMissingRecords } from '@/lib/attendanceUtils';
 
 export async function GET(request: NextRequest) {
     try {
+        // Automatically check out anyone who forgot yesterday or earlier
+        await autoCheckOutMissingRecords();
+
         const user = await getAuthUser();
         if (!user) {
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
@@ -54,6 +58,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST() {
     try {
+        // Automatically check out anyone who forgot yesterday or earlier
+        await autoCheckOutMissingRecords();
+
         const user = await getAuthUser();
         if (!user) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
 

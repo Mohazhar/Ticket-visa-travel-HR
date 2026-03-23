@@ -54,6 +54,7 @@ export async function getAuthUser() {
     designation: employee.designation,
     department: employee.department,
     role: employee.role,
+    canAddExpense: employee.canAddExpense,
     leaveBalance: JSON.parse(employee.leaveBalance),
   };
 }
@@ -90,6 +91,7 @@ export async function login(email: string, password: string) {
       designation: employee.designation,
       department: employee.department,
       role: employee.role,
+      canAddExpense: employee.canAddExpense,
       leaveBalance: JSON.parse(employee.leaveBalance),
     },
   };

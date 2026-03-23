@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { leaveType, fromDate, toDate, reason } = body;
+    const { leaveType, fromDate, toDate, reason, employeeId } = body;
 
     if (!leaveType || !fromDate || !toDate || !reason) {
       return NextResponse.json(
@@ -74,32 +74,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const isAdmin = user.role === 'admin';
+    const targetEmployeeId = isAdmin && employeeId ? employeeId : user.id;
+    const finalStatus = isAdmin && employeeId ? 'approved' : 'pending';
+
     const leave = await db.leave.create({
       data: {
-        employeeId: user.id,
+        employeeId: targetEmployeeId,
         leaveType,
         fromDate,
         toDate,
         reason,
-        status: 'pending',
+        status: finalStatus,
       },
     });
 
-    // Notify all admins about the new leave request
-    const admins = await db.employee.findMany({
-      where: { role: 'admin' },
-    });
+    if (finalStatus === 'pending') {
+      // Notify all admins about the new leave request
+      const admins = await db.employee.findMany({
+        where: { role: 'admin' },
+      });
 
-    if (admins.length > 0) {
-      const notifications = admins.map((admin) => ({
-        userId: admin.id,
-        title: 'New Leave Request',
-        message: `${user.name} has applied for ${leaveType} leave from ${fromDate} to ${toDate}.`,
-        type: 'leave_request',
-      }));
+      if (admins.length > 0) {
+        const notifications = admins.map((admin) => ({
+          userId: admin.id,
+          title: 'New Leave Request',
+          message: `${user.name} has applied for ${leaveType} leave from ${fromDate} to ${toDate}.`,
+          type: 'leave_request',
+        }));
 
-      await db.notification.createMany({
-        data: notifications,
+        await db.notification.createMany({
+          data: notifications,
+        });
+      }
+    } else {
+      // Notify the employee that an admin added leave for them
+      await db.notification.create({
+        data: {
+          userId: targetEmployeeId,
+          title: 'Leave Added',
+          message: `An admin has logged ${leaveType} leave for you from ${fromDate} to ${toDate}. Reason: ${reason}`,
+          type: 'leave_update',
+        }
       });
     }
 

@@ -212,7 +212,6 @@ export default function ApplyLeavePage() {
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
                   />
                 </div>
 
@@ -223,7 +222,7 @@ export default function ApplyLeavePage() {
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
-                    min={fromDate || new Date().toISOString().split('T')[0]}
+                    min={fromDate || undefined}
                   />
                 </div>
               </div>
