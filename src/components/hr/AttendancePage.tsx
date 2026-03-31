@@ -12,6 +12,10 @@ interface Attendance {
     checkOut: string | null;
     status: string;
     breaks?: string | null;
+    employee?: {
+        name: string;
+        employeeId: string;
+    };
 }
 
 export default function AttendancePage() {
@@ -62,6 +66,7 @@ export default function AttendancePage() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        {user?.role === 'admin' && <TableHead>Employee</TableHead>}
                                         <TableHead>Date</TableHead>
                                         <TableHead>Check In</TableHead>
                                         <TableHead>Check Out</TableHead>
@@ -80,6 +85,12 @@ export default function AttendancePage() {
 
                                         return (
                                             <TableRow key={record.id}>
+                                                {user?.role === 'admin' && (
+                                                    <TableCell>
+                                                        <div className="font-medium text-gray-900">{record.employee?.name || 'Unknown'}</div>
+                                                        <div className="text-xs text-gray-500">{record.employee?.employeeId || 'Unknown ID'}</div>
+                                                    </TableCell>
+                                                )}
                                                 <TableCell className="font-medium text-[#004d98]">
                                                     <div className="flex items-center">
                                                         <Calendar className="w-4 h-4 mr-2 text-gray-400" />
